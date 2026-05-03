@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light mode (cool blue tint instead of pure white) */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 210 40% 96%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 210 40% 96%;
+    --popover-foreground: 222 47% 11%;
+
+    /* 🔵 Primary now deep blue */
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 20% 98%;
+
+    --secondary: 210 30% 92%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 30% 92%;
+    --muted-foreground: 215 20% 40%;
+
+    --accent: 210 30% 90%;
+    --accent-foreground: 222 47% 11%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 20% 98%;
+
+    --border: 214 32% 85%;
+    --input: 214 32% 85%;
+    --ring: 217 91% 60%;
+
+    --radius: 1rem;
+  }
+
+  .dark {
+    /* 🌑 TRUE DARK BLUE THEME */
+    --background: 222 47% 6%;
+    --foreground: 210 20% 95%;
+
+    --card: 222 45% 10%;
+    --card-foreground: 210 20% 95%;
+
+    --popover: 222 45% 10%;
+    --popover-foreground: 210 20% 95%;
+
+    /* 🔵 Vibrant dark blue accent */
+    --primary: 217 91% 65%;
+    --primary-foreground: 222 47% 6%;
+
+    --secondary: 222 35% 16%;
+    --secondary-foreground: 210 20% 95%;
+
+    --muted: 222 30% 14%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 222 30% 18%;
+    --accent-foreground: 210 20% 95%;
+
+    --destructive: 0 63% 40%;
+    --destructive-foreground: 210 20% 95%;
+
+    --border: 222 25% 22%;
+    --input: 222 25% 22%;
+    --ring: 217 91% 65%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans), Inter, system-ui, sans-serif;
+
+    /* 🔥 Dark blue ambient glow */
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(37, 99, 235, 0.18), transparent 40%),
+      radial-gradient(circle at 85% 0%, rgba(59, 130, 246, 0.15), transparent 45%),
+      linear-gradient(180deg, transparent 0%, rgba(2, 6, 23, 0.6) 100%);
+
+    min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background-color: hsl(var(--card) / 0.6);
+    @apply backdrop-blur-xl border border-blue-400/10 shadow-2xl;
+  }
+
+  .gradient-primary {
+    @apply bg-gradient-to-r from-blue-600 to-blue-400 text-white;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent;
+  }
+
+  .premium-card {
+    @apply glass hover:bg-white/[0.04] transition-all duration-500 hover:shadow-primary/5 hover:-translate-y-1;
+  }
+
+  .input-premium {
+    @apply w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all;
+  }
+}
+
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow {
+  0%, 100% { opacity: 0.5; filter: blur(20px); }
+  50% { opacity: 0.8; filter: blur(30px); }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 4s ease-in-out infinite;
+}
