@@ -150,3 +150,10 @@ export function useAssignmentsQuery() {
     retry: false,
   });
 }
+
+export function useUserSkillStatsQuery() {
+  return useQuery({
+    queryKey: ['user-skill-stats'],
+    queryFn: () => apiGet<any[]>('/api/exam/user/skill-stats'),
+  });
+}

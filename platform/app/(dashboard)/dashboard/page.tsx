@@ -18,6 +18,8 @@ import { hasActiveSubscription } from '@/services/billingService';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
+import { SkillRadarChart } from '@/components/dashboard/SkillRadarChart';
+
 export default function DashboardPage() {
   const { data, isLoading, isError, refetch } = useDashboardOverviewQuery();
   const user = useAuthStore((state) => state.user);
@@ -129,38 +131,7 @@ export default function DashboardPage() {
         </motion.div>
 
         <div className="grid gap-8 lg:grid-cols-[1fr_0.8fr]">
-          {/* Skill Progress Card */}
-          <div className="rounded-[2.5rem] border border-white/[0.05] bg-[#0A0C14]/40 p-8 backdrop-blur-xl shadow-xl">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h3 className="text-xl font-black text-white tracking-tight flex items-center gap-3">
-                  <Target className="h-5 w-5 text-indigo-400" />
-                  Readiness Score
-                </h3>
-                <p className="text-sm text-slate-500 mt-1">Cross-matrix skill assessment results</p>
-              </div>
-              <Badge variant="outline" className="rounded-xl border-white/10 px-3 py-1 text-[10px] uppercase font-black tracking-widest">Live Sync</Badge>
-            </div>
-
-            <div className="space-y-6">
-              {data.skillProgress.map((skill) => (
-                <div key={skill.skill} className="space-y-2 group">
-                  <div className="flex items-center justify-between text-[13px] font-black uppercase tracking-widest text-slate-400 group-hover:text-white transition-colors">
-                    <span>{skill.skill}</span>
-                    <span className="text-indigo-400">{skill.progress}%</span>
-                  </div>
-                  <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden border border-white/[0.03]">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${skill.progress}%` }}
-                      transition={{ duration: 1, ease: "easeOut" }}
-                      className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full shadow-[0_0_15px_rgba(99,102,241,0.3)]"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <SkillRadarChart />
 
           {/* Recommendations Card */}
           <div className="rounded-[2.5rem] border border-white/[0.05] bg-[#0A0C14]/40 p-8 backdrop-blur-xl shadow-xl">

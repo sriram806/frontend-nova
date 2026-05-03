@@ -266,7 +266,7 @@ export function ExamResult() {
       <CertificateViewer 
         isOpen={isCertificateOpen}
         onClose={() => setIsCertificateOpen(false)}
-        attemptId={result.id}
+        attemptId={result.sessionId}
         skillName={session.skillName}
       />
     </PageTransition>
