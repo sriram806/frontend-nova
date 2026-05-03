@@ -64,3 +64,18 @@ export const getAnalytics = async (skillName: string) => {
   const res = await api.get<{ success: true; data: any }>(`${BASE}/analytics/${encodeURIComponent(skillName)}`);
   return extractApiData(res);
 };
+
+export const listSkillRequests = async () => {
+  const res = await api.get<{ success: true; data: any[] }>(`${BASE}/requests`);
+  return extractApiData(res);
+};
+
+export const updateRequestStatus = async (requestId: string, status: string) => {
+  const res = await api.patch<{ success: true; data: any }>(`${BASE}/requests/${requestId}`, { status });
+  return extractApiData(res);
+};
+
+export const getModerationOverview = async () => {
+  const res = await api.get<{ success: true; data: any }>(`${BASE}/moderation/overview`);
+  return extractApiData(res);
+};

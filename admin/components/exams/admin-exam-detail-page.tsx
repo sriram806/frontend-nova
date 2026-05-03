@@ -15,6 +15,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
+import { getAnalytics } from '@/services/examService';
+import { ExamAnalytics } from './ExamAnalytics';
 import {
   useAdminExamTemplateQuestionsQuery,
   useAdminExamTemplatesQuery,
@@ -102,6 +104,26 @@ export function AdminExamDetailPage({
   const [questionFilter, setQuestionFilter] = useState<'ALL' | 'MCQ' | 'FILL' | 'CODE'>('ALL');
   const [bulkExampleType, setBulkExampleType] = useState<'MCQ' | 'FILL' | 'CODE'>('MCQ');
   const [activeTab, setActiveTab] = useState(initialTab === 'add' ? 'editor' : initialTab);
+  const [analyticsData, setAnalyticsData] = useState<any>(null);
+  const [isAnalyticsLoading, setIsAnalyticsLoading] = useState(false);
+
+  const fetchAnalytics = async () => {
+    setIsAnalyticsLoading(true);
+    try {
+      const data = await getAnalytics(skillName);
+      setAnalyticsData(data);
+    } catch (err) {
+      console.error('Failed to fetch analytics', err);
+    } finally {
+      setIsAnalyticsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'analytics') {
+      fetchAnalytics();
+    }
+  }, [activeTab, skillName]);
 
   // Sync with props
   useEffect(() => {
@@ -300,6 +322,7 @@ export function AdminExamDetailPage({
     const params = new URLSearchParams(searchParams.toString());
     if (val === 'editor') params.set('view', 'add');
     else if (val === 'questions') params.set('view', 'questions');
+    else if (val === 'analytics') params.set('view', 'analytics');
     else if (val === 'bulk') params.set('view', 'questions'); // Bulk stays under questions/manage view
     router.replace(`/exams/manage?${params.toString()}`);
   };
@@ -361,6 +384,7 @@ export function AdminExamDetailPage({
           <TabsList className="rounded-2xl">
             <TabsTrigger value="editor">Add / Edit Question</TabsTrigger>
             <TabsTrigger value="questions">View All Questions</TabsTrigger>
+            <TabsTrigger value="analytics">Performance Analytics</TabsTrigger>
             <TabsTrigger value="bulk">Bulk Update</TabsTrigger>
           </TabsList>
 
@@ -609,6 +633,10 @@ export function AdminExamDetailPage({
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="analytics" className="animate-in fade-in duration-500">
+            <ExamAnalytics data={analyticsData} loading={isAnalyticsLoading} />
           </TabsContent>
         </Tabs>
       </div>

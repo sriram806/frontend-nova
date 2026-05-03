@@ -69,6 +69,7 @@
     "next": "^16.1.6",
     "next-themes": "^0.3.0",
     "ogl": "^1.0.11",
+    "papaparse": "^5.5.3",
     "postcss": "8.4.30",
     "postprocessing": "^6.38.3",
     "react": "^19.2.4",
@@ -117,5 +118,8 @@
     "input-otp": {
       "react": "$react"
     }
+  },
+  "devDependencies": {
+    "@types/papaparse": "^5.5.2"
   }
 }

@@ -1,18 +1,31 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, ClipboardCheck, Code2, Lock, ShieldCheck, Sparkles } from 'lucide-react';
+import { 
+  ArrowRight, 
+  ClipboardCheck, 
+  Code2, 
+  Lock, 
+  ShieldCheck, 
+  Sparkles,
+  AlertCircle,
+  Calendar,
+  Zap,
+  Target
+} from 'lucide-react';
 import { PageTransition } from '@/components/common/page-transition';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useExamCatalogQuery } from '@/hooks/queries/useExamQueries';
+import { useAssignmentsQuery, useExamCatalogQuery } from '@/hooks/queries/useExamQueries';
 import { useAuthStore } from '@/store/authStore';
 import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 
 export default function DashboardExamPage() {
   const { data, isLoading, isError, refetch } = useExamCatalogQuery();
+  const { data: assignments, isLoading: isAssignmentsLoading } = useAssignmentsQuery();
   const user = useAuthStore((state) => state.user);
   const isAdmin = user?.role === 'admin';
 
@@ -102,6 +115,62 @@ export default function DashboardExamPage() {
             </Button>
           </div>
         ) : null}
+
+        {/* Assigned Assessments Section */}
+        {assignments && assignments.length > 0 && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+             <div className="flex items-center gap-3 ml-4">
+                <div className="h-8 w-8 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-400">
+                   <AlertCircle className="h-4 w-4" />
+                </div>
+                <h3 className="text-xl font-black text-white tracking-tight italic uppercase">Required Assessments</h3>
+             </div>
+
+             <div className="grid gap-4 md:grid-cols-2">
+                {assignments.map((asgn: any) => (
+                  <div key={asgn.id} className="group relative p-6 rounded-[2rem] border border-orange-500/20 bg-orange-500/[0.03] backdrop-blur-xl overflow-hidden hover:border-orange-500/40 transition-all">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
+                    
+                    <div className="flex flex-col gap-4 relative z-10">
+                       <div className="flex items-center justify-between">
+                          <div className={cn(
+                            "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border",
+                            asgn.priority === 'HIGH' ? "bg-rose-500/20 text-rose-400 border-rose-500/20" : "bg-orange-500/20 text-orange-400 border-orange-500/20"
+                          )}>
+                            {asgn.priority} Priority
+                          </div>
+                          {asgn.deadlineAt && (
+                            <div className="flex items-center gap-2 text-[10px] font-bold text-white/40">
+                               <Calendar className="h-3 w-3" />
+                               {format(new Date(asgn.deadlineAt), 'MMM dd, yyyy')}
+                            </div>
+                          )}
+                       </div>
+
+                       <div>
+                          <h4 className="text-lg font-black text-white tracking-tight">{asgn.skillName} Assessment</h4>
+                          <p className="text-xs text-white/60 font-medium line-clamp-1 mt-1">{asgn.description}</p>
+                       </div>
+
+                       <div className="flex items-center justify-between pt-2">
+                          <div className="flex items-center gap-2">
+                             <div className="h-6 w-6 rounded-lg bg-white/5 flex items-center justify-center text-primary">
+                                <Zap className="h-3 w-3" />
+                             </div>
+                             <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Assigned by Admin</span>
+                          </div>
+                          <Button asChild className="h-10 px-6 rounded-xl bg-primary text-black font-black uppercase tracking-widest text-[9px] hover:scale-105 transition-all">
+                             <Link href={`/exam?skill=${encodeURIComponent(asgn.skillName)}`}>
+                                Start Now
+                             </Link>
+                          </Button>
+                       </div>
+                    </div>
+                  </div>
+                ))}
+             </div>
+          </div>
+        )}
 
         {!isLoading && !isError && data ? (
           <div className="grid gap-6">

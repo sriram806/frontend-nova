@@ -24,6 +24,7 @@ const AUTH_BASE_URL = process.env.NEXT_PUBLIC_AUTH_API_URL ?? 'http://localhost:
 const USER_BASE_URL = process.env.NEXT_PUBLIC_USER_API_URL ?? 'http://localhost:4002';
 const AI_BASE_URL = process.env.NEXT_PUBLIC_AI_API_URL ?? 'http://localhost:8000';
 const BILLING_BASE_URL = process.env.NEXT_PUBLIC_BILLING_API_URL ?? `${API_GATEWAY_URL}/api`;
+const EXAM_BASE_URL = process.env.NEXT_PUBLIC_EXAM_API_URL ?? 'http://localhost:4003';
 
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean;
@@ -152,6 +153,12 @@ export const aiApi = axios.create({
 
 export const billingApi = axios.create({
   baseURL: BILLING_BASE_URL,
+  timeout: 20000,
+  withCredentials: true,
+});
+
+export const examApi = axios.create({
+  baseURL: EXAM_BASE_URL,
   timeout: 20000,
   withCredentials: true,
 });
@@ -386,3 +393,4 @@ attachAuthInterceptors(authApi);
 attachAuthInterceptors(userApi);
 attachAuthInterceptors(aiApi);
 attachAuthInterceptors(billingApi);
+attachAuthInterceptors(examApi);

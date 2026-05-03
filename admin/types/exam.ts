@@ -15,12 +15,22 @@ export interface ExamTemplateSummary {
   fillBlankCount: number;
   codingCount: number;
   isPublished: boolean;
+  securityConfig: {
+    enforceFullscreen: boolean;
+    disableCopyPaste: boolean;
+    trackTabSwitches: boolean;
+    shuffleQuestions: boolean;
+    maxTabSwitches?: number;
+  };
   createdAt: string;
   availableQuestions: {
     total: number;
     mcq: number;
     fill: number;
     code: number;
+    easy: number;
+    medium: number;
+    hard: number;
   };
 }
 
@@ -53,6 +63,13 @@ export interface UpsertExamTemplatePayload {
   fillBlankCount?: number;
   codingCount?: number;
   isPublished?: boolean;
+  securityConfig?: {
+    enforceFullscreen: boolean;
+    disableCopyPaste: boolean;
+    trackTabSwitches: boolean;
+    shuffleQuestions: boolean;
+    maxTabSwitches?: number;
+  };
 }
 
 export interface BulkQuestionPayload {

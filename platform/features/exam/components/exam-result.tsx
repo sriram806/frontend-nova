@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   CheckCircle2, 
@@ -16,7 +16,9 @@ import {
   History,
   TrendingUp,
   BrainCircuit,
-  Star
+  Star,
+  FileDown,
+  ExternalLink
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { PageTransition } from '@/components/common/page-transition';
@@ -36,6 +38,7 @@ export function ExamResult() {
   const session = useExamStore((state) => state.session);
   const result = useExamStore((state) => state.result);
   const reset = useExamStore((state) => state.reset);
+  const [isCertificateOpen, setIsCertificateOpen] = useState(false);
 
   useEffect(() => {
     if (!session || !result) {
@@ -208,9 +211,17 @@ export function ExamResult() {
                  </div>
 
                  {passed && (
-                   <Button className="w-full rounded-2xl bg-primary text-black font-black italic shadow-lg shadow-primary/20">
-                      SHARE ON LINKEDIN <Share2 className="w-4 h-4 ml-2" />
-                   </Button>
+                   <div className="w-full space-y-3">
+                     <Button 
+                       onClick={() => setIsCertificateOpen(true)}
+                       className="w-full rounded-2xl bg-white text-black font-black italic shadow-lg hover:bg-white/90"
+                     >
+                        VIEW CERTIFICATE <FileDown className="w-4 h-4 ml-2" />
+                     </Button>
+                     <Button className="w-full rounded-2xl bg-primary/10 border border-primary/20 text-primary font-black italic">
+                        SHARE ON LINKEDIN <Share2 className="w-4 h-4 ml-2" />
+                     </Button>
+                   </div>
                  )}
               </Card>
 
@@ -251,6 +262,15 @@ export function ExamResult() {
         </div>
 
       </div>
+      
+      <CertificateViewer 
+        isOpen={isCertificateOpen}
+        onClose={() => setIsCertificateOpen(false)}
+        attemptId={result.id}
+        skillName={session.skillName}
+      />
     </PageTransition>
   );
 }
+
+import { CertificateViewer } from './certificate-viewer';

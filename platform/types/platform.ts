@@ -92,6 +92,13 @@ export type ExamSession = {
   passPercentage: number;
   instructions: string[];
   questions: ExamQuestion[];
+  securityConfig: {
+    enforceFullscreen: boolean;
+    disableCopyPaste: boolean;
+    trackTabSwitches: boolean;
+    shuffleQuestions: boolean;
+    maxTabSwitches?: number;
+  };
 };
 
 export type ExamCatalogItem = {
@@ -103,6 +110,13 @@ export type ExamCatalogItem = {
   isPublished: boolean;
   isReady: boolean;
   passPercentage: number;
+  securityConfig: {
+    enforceFullscreen: boolean;
+    disableCopyPaste: boolean;
+    trackTabSwitches: boolean;
+    shuffleQuestions: boolean;
+    maxTabSwitches?: number;
+  };
   questionBank: {
     total: number;
     mcq: number;

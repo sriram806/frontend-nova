@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, AlertCircle, Save } from 'lucide-react';
+import { X, Sparkles, AlertCircle, Save, ShieldCheck, Lock, MousePointer2, RefreshCcw, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -36,6 +36,12 @@ export function CreateExamModal({ isOpen, onClose, onSave, editingTemplate }: Cr
     fillBlankCount: 5,
     codingCount: 2,
     isPublished: false,
+    securityConfig: {
+      enforceFullscreen: false,
+      disableCopyPaste: true,
+      trackTabSwitches: true,
+      shuffleQuestions: true
+    }
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,6 +59,12 @@ export function CreateExamModal({ isOpen, onClose, onSave, editingTemplate }: Cr
         fillBlankCount: editingTemplate.fillBlankCount,
         codingCount: editingTemplate.codingCount,
         isPublished: editingTemplate.isPublished,
+        securityConfig: editingTemplate.securityConfig || {
+          enforceFullscreen: false,
+          disableCopyPaste: true,
+          trackTabSwitches: true,
+          shuffleQuestions: true
+        }
       });
     } else {
       setFormData({
@@ -66,6 +78,12 @@ export function CreateExamModal({ isOpen, onClose, onSave, editingTemplate }: Cr
         fillBlankCount: 5,
         codingCount: 2,
         isPublished: false,
+        securityConfig: {
+          enforceFullscreen: false,
+          disableCopyPaste: true,
+          trackTabSwitches: true,
+          shuffleQuestions: true
+        }
       });
     }
   }, [editingTemplate, isOpen]);
@@ -119,7 +137,7 @@ export function CreateExamModal({ isOpen, onClose, onSave, editingTemplate }: Cr
           </div>
 
           {/* Form Content */}
-          <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-8 space-y-6">
+          <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
             <div className="grid grid-cols-2 gap-6">
               {/* Basic Info */}
               <div className="space-y-2">
@@ -202,6 +220,77 @@ export function CreateExamModal({ isOpen, onClose, onSave, editingTemplate }: Cr
                 </div>
               </div>
 
+              {/* Security Settings */}
+              <div className="space-y-4 col-span-2">
+                <h3 className="text-sm font-bold text-white flex items-center gap-2 border-b border-white/5 pb-2">
+                  <ShieldCheck className="h-4 w-4 text-primary" />
+                  Exam Security & Integrity
+                </h3>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <SecurityToggle 
+                    icon={<Lock className="h-4 w-4" />}
+                    label="Strict Full-screen"
+                    description="Auto-submit if user exits full-screen"
+                    checked={formData.securityConfig?.enforceFullscreen || false}
+                    onChange={(v: boolean) => setFormData({
+                      ...formData, 
+                      securityConfig: { ...(formData.securityConfig || {
+                        enforceFullscreen: false,
+                        disableCopyPaste: true,
+                        trackTabSwitches: true,
+                        shuffleQuestions: true
+                      }), enforceFullscreen: v }
+                    })}
+                  />
+                  <SecurityToggle 
+                    icon={<MousePointer2 className="h-4 w-4" />}
+                    label="Anti-Copy/Paste"
+                    description="Disable right-click and copy-paste"
+                    checked={formData.securityConfig?.disableCopyPaste || false}
+                    onChange={(v: boolean) => setFormData({
+                      ...formData, 
+                      securityConfig: { ...(formData.securityConfig || {
+                        enforceFullscreen: false,
+                        disableCopyPaste: true,
+                        trackTabSwitches: true,
+                        shuffleQuestions: true
+                      }), disableCopyPaste: v }
+                    })}
+                  />
+                  <SecurityToggle 
+                    icon={<RefreshCcw className="h-4 w-4" />}
+                    label="Shuffle Questions"
+                    description="Randomize question order for each user"
+                    checked={formData.securityConfig?.shuffleQuestions || false}
+                    onChange={(v: boolean) => setFormData({
+                      ...formData, 
+                      securityConfig: { ...(formData.securityConfig || {
+                        enforceFullscreen: false,
+                        disableCopyPaste: true,
+                        trackTabSwitches: true,
+                        shuffleQuestions: true
+                      }), shuffleQuestions: v }
+                    })}
+                  />
+                  <SecurityToggle 
+                    icon={<Activity className="h-4 w-4" />}
+                    label="Tab Monitoring"
+                    description="Log and notify on window switches"
+                    checked={formData.securityConfig?.trackTabSwitches || false}
+                    onChange={(v: boolean) => setFormData({
+                      ...formData, 
+                      securityConfig: { ...(formData.securityConfig || {
+                        enforceFullscreen: false,
+                        disableCopyPaste: true,
+                        trackTabSwitches: true,
+                        shuffleQuestions: true
+                      }), trackTabSwitches: v }
+                    })}
+                  />
+                </div>
+              </div>
+
               {/* Other settings */}
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Skill Type</Label>
@@ -220,7 +309,7 @@ export function CreateExamModal({ isOpen, onClose, onSave, editingTemplate }: Cr
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Difficulty Level (1-5)</Label>
+                <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Difficulty (1-5)</Label>
                 <Input 
                   type="number"
                   min="1"
@@ -231,10 +320,10 @@ export function CreateExamModal({ isOpen, onClose, onSave, editingTemplate }: Cr
                 />
               </div>
 
-              <div className="col-span-2 flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+              <div className="col-span-2 flex items-center justify-between p-6 rounded-3xl bg-primary/5 border border-primary/20">
                 <div className="space-y-1">
-                  <p className="text-sm font-bold text-white">Publish Immediately</p>
-                  <p className="text-xs text-muted-foreground">Visible in the platform catalog once active.</p>
+                  <p className="text-sm font-bold text-white">Publish to Platform</p>
+                  <p className="text-xs text-white/40">Visible in the public catalog once enabled.</p>
                 </div>
                 <Switch 
                   checked={formData.isPublished} 
@@ -243,20 +332,20 @@ export function CreateExamModal({ isOpen, onClose, onSave, editingTemplate }: Cr
               </div>
             </div>
 
-            <div className="pt-4 flex gap-3">
+            <div className="pt-4 flex gap-3 pb-8">
               <Button 
                 type="submit" 
                 disabled={isSubmitting}
-                className="flex-1 rounded-2xl h-12 gradient-primary border-none shadow-xl text-sm font-bold gap-2"
+                className="flex-1 rounded-2xl h-14 gradient-primary border-none shadow-2xl shadow-primary/20 text-sm font-black uppercase tracking-widest gap-2"
               >
-                <Save className="h-4 w-4" />
+                <Save className="h-5 w-5" />
                 {isSubmitting ? 'Saving...' : editingTemplate ? 'Update Template' : 'Create Exam Template'}
               </Button>
               <Button 
                 type="button" 
                 variant="outline" 
                 onClick={onClose}
-                className="px-8 rounded-2xl h-12 border-white/10 text-sm font-bold"
+                className="px-10 rounded-2xl h-14 border-white/10 text-sm font-black uppercase tracking-widest"
               >
                 Cancel
               </Button>
@@ -267,3 +356,18 @@ export function CreateExamModal({ isOpen, onClose, onSave, editingTemplate }: Cr
     </AnimatePresence>
   );
 }
+
+const SecurityToggle = ({ icon, label, description, checked, onChange }: any) => (
+  <div className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5 group hover:bg-white/[0.04] transition-all">
+    <div className="flex items-center gap-3">
+      <div className="h-10 w-10 rounded-xl bg-white/5 flex items-center justify-center text-white/20 group-hover:text-primary group-hover:bg-primary/10 transition-all">
+        {icon}
+      </div>
+      <div className="space-y-0.5">
+        <p className="text-xs font-bold text-white/90">{label}</p>
+        <p className="text-[10px] text-white/20 font-medium">{description}</p>
+      </div>
+    </div>
+    <Switch checked={checked} onCheckedChange={onChange} />
+  </div>
+);

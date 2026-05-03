@@ -142,3 +142,11 @@ export function useDeleteExamQuestionMutation() {
     },
   });
 }
+
+export function useAssignmentsQuery() {
+  return useQuery({
+    queryKey: ['exam-assignments'],
+    queryFn: () => apiGet<any[]>('/api/exam/assignments'),
+    retry: false,
+  });
+}
